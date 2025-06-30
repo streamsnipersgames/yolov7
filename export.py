@@ -53,6 +53,7 @@ if __name__ == '__main__':
 
     # Input
     img = torch.zeros(opt.batch_size, 3, *opt.img_size).to(device)  # image size(1,3,320,192) iDetection
+    # here model(img)[0] has the same size as pred in detect
 
     # Update model
     for k, m in model.named_modules():
@@ -66,6 +67,8 @@ if __name__ == '__main__':
         #     m.forward = m.forward_export  # assign forward (optional)
     model.model[-1].export = not opt.grid  # set Detect() layer grid export
     y = model(img)  # dry run
+    print(f"output type is {type(y)}")
+    print(f"shape of first element of y is {y[0].shape}")
     if opt.include_nms:
         model.model[-1].include_nms = True
         y = None
